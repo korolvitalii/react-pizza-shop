@@ -4,15 +4,15 @@ export default function SortPopup({ items }) {
   const [visiblePopup, setVisiblePopup] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
   const sortRef = useRef();
-
+  const ariaLabel = items[activeItem].name;
   const handleOutsideClick = (e) => {
     let path = e.path || e.composedPath();
     if (!path.includes(sortRef.current)) {
       setVisiblePopup(false);
     }
   };
-  const onSelectItem = (index) => {
-    setActiveItem(index);
+  const onSelectItem = (type) => {
+    setActiveItem(type);
     setVisiblePopup(false);
   };
 
@@ -40,12 +40,12 @@ export default function SortPopup({ items }) {
           />
         </svg>
         <b>Sorted by:</b>
-        <span onClick={toggleVisiblePopup}>{items[activeItem]}</span>
+        <span onClick={toggleVisiblePopup}>{ariaLabel}</span>
       </div>
       {visiblePopup && (
         <div className='sort__popup'>
           <ul>
-            {items.map((name, index) => (
+            {items.map(({ name }, index) => (
               <li
                 className={activeItem === index ? 'active' : ''}
                 key={`${name}_${index}`}

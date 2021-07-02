@@ -9,7 +9,13 @@ function Home({ items }) {
           onClickItem={(name) => console.log(name)}
           items={['Meat', 'Vegetarian', 'Grill', 'Sharp', 'Closed']}
         />
-        <SortPopup items={['popularity', 'the price', 'alphabet']} />
+        <SortPopup
+          items={[
+            { name: 'popularity', type: 'popular' },
+            { name: 'the price', type: 'price' },
+            { name: 'alphabet', type: 'alfabet' },
+          ]}
+        />
       </div>
       <h2 className='content__title'>All pizzas</h2>
       <div className='content__items'>
