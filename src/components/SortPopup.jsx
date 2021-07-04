@@ -5,6 +5,7 @@ export default function SortPopup({ items }) {
   const [activeItem, setActiveItem] = useState(0);
   const sortRef = useRef();
   const ariaLabel = items[activeItem].name;
+
   const handleOutsideClick = (e) => {
     let path = e.path || e.composedPath();
     if (!path.includes(sortRef.current)) {
