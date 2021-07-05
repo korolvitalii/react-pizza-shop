@@ -1,9 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Categories, SortPopup, PizzaBlock } from '../components';
-import { setCategory } from '../redux/actions/filters';
+import { setCategory, setSortBy } from '../redux/actions/filters';
 import { fetchPizzas } from '../redux/actions/pizzas';
+import LoadingBlock from '../components/PizzaBlock/LoadingBlock';
 
 const categoryNames = ['Meat', 'Vegetarian', 'Grill', 'Sharp', 'Closed'];
 const sortItems = [
@@ -14,27 +15,37 @@ const sortItems = [
 
 const Home = React.memo(() => {
   const { items, isLoaded } = useSelector(({ pizzas }) => pizzas);
+  const { category, sortBy } = useSelector(({ filters }) => filters);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!items.length) {
-      dispatch(fetchPizzas());
-    }
-  });
+    dispatch(fetchPizzas());
+  }, [category]);
 
-  const onSelectCategory = useCallback((index) => {
+  const onSelectCategory = (index) => {
     dispatch(setCategory(index));
-  }, []);
+  };
+
+  const onSelectSortType = (type) => {
+    dispatch(setSortBy(type));
+  };
+
   return (
     <div className='container'>
       <div className='content__top'>
-        <Categories onClickItem={onSelectCategory} items={categoryNames} />
-        <SortPopup items={sortItems} />
+        <Categories
+          activeCategory={category}
+          onClickCategory={onSelectCategory}
+          items={categoryNames}
+        />
+        <SortPopup activeSortType={sortBy} items={sortItems} onClickSortType={onSelectSortType} />
       </div>
       <h2 className='content__title'>All pizzas</h2>
       <div className='content__items'>
-        {isLoaded && items.map((item) => <PizzaBlock key={item.id} {...item} />)}
-        {Array(10).fill()}
+        {isLoaded
+          ? items.map((item) => <PizzaBlock isLoading={true} key={item.id} {...item} />)
+          : Array(12).fill(<LoadingBlock />)}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-function PizzaBlock({ name, price, imageUrl, category, rating, types, sizes }) {
+const PizzaBlock = ({ name, price, imageUrl, category, rating, types, sizes }) => {
   const [activeType, setActiveType] = useState(types[0]);
   const [activeSize, setActiveSize] = useState(sizes[0]);
   const availableTypes = ['thin', 'traditional'];
@@ -65,7 +65,7 @@ function PizzaBlock({ name, price, imageUrl, category, rating, types, sizes }) {
       </div>
     </div>
   );
-}
+};
 
 PizzaBlock.propTypes = {
   name: PropTypes.string.isRequired,
