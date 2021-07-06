@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 const SortPopup = ({ onClickSortType, activeSortType, items }) => {
   const [visiblePopup, setVisiblePopup] = useState(false);
   const sortRef = useRef();
-  console.log(items, activeSortType);
-  const ariaLabel = items.find(({ type }) => type === activeSortType).name;
+  const ariaLabel = items.find((obj) => obj.type === activeSortType).name;
   const handleOutsideClick = (e) => {
     let path = e.path || e.composedPath();
     if (!path.includes(sortRef.current)) {
@@ -46,12 +45,12 @@ const SortPopup = ({ onClickSortType, activeSortType, items }) => {
       {visiblePopup && (
         <div className='sort__popup'>
           <ul>
-            {items.map(({ name, type }, index) => (
+            {items.map((obj, index) => (
               <li
                 className={activeSortType === index ? 'active' : ''}
-                key={`${name}_${index}`}
-                onClick={() => onSelectItem(type)}>
-                {name}
+                key={`${obj.type}_${index}`}
+                onClick={() => onSelectItem(obj)}>
+                {obj.name}
               </li>
             ))}
           </ul>
