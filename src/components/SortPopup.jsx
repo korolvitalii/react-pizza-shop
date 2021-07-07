@@ -6,7 +6,7 @@ const SortPopup = ({ onClickSortType, activeSortType, items }) => {
   const sortRef = useRef();
   const ariaLabel = items.find((obj) => obj.type === activeSortType).name;
   const handleOutsideClick = (e) => {
-    let path = e.path || e.composedPath();
+    const path = e.path || (e.composedPath && e.composedPath());
     if (!path.includes(sortRef.current)) {
       setVisiblePopup(false);
     }

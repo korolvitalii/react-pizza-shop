@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 
-const Button = ({ onClick, className, outline, children }) => {
+const Button = (props) => {
+  const { onClick, className, outline, children } = props;
   return (
     <button
       onClick={onClick}
