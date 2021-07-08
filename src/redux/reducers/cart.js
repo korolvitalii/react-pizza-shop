@@ -6,17 +6,17 @@ const initialState = {
 
 const cart = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_PIZZAS':
+    case 'ADD_PIZZA_CART':
       return {
         ...state,
-        items: action.payload,
-        isLoaded: true,
+        items: {
+          [action.payload.id]: [...state.items[action.payload.id], action.payload],
+        },
       };
-    case 'SET_LOADED':
+    case 'SET_TOTAL_COUNT':
       return {
         ...state,
-        items: action.payload,
-        isLoaded: action.payload,
+        totalCount: action.payload,
       };
     default:
       return state;

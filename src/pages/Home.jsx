@@ -50,7 +50,14 @@ const Home = React.memo(() => {
       <h2 className='content__title'>All pizzas</h2>
       <div className='content__items'>
         {isLoaded
-          ? items.map((item) => <PizzaBlock isLoading={true} key={item.id} {...item} />)
+          ? items.map((item) => (
+              <PizzaBlock
+                onClickAddPizza={(obj) => console.log(obj)}
+                isLoading={true}
+                key={item.id}
+                {...item}
+              />
+            ))
           : Array(12)
               .fill(0)
               .map((elem) => <LoadingBlock key={uniqueId()} />)}
