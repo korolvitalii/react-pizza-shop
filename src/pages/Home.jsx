@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { uniqueId } from 'lodash';
 
 import { Categories, SortPopup, PizzaBlock } from '../components';
 import { setCategory, setSortBy } from '../redux/actions/filters';
+import { addPizzaToCart } from '../redux/actions/cart';
 import { fetchPizzas } from '../redux/actions/pizzas';
 import LoadingBlock from '../components/PizzaBlock/LoadingBlock';
 import { uniqueId } from 'lodash';
+// import cart from '../redux/reducers/cart';
 
 const categoryNames = ['Meat', 'Vegetarian', 'Grill', 'Sharp', 'Closed'];
 const sortItems = [
@@ -16,10 +17,10 @@ const sortItems = [
 ];
 
 const Home = React.memo(() => {
+  const dispatch = useDispatch();
+  const { addedItems } = useSelector(({ cart }) => cart);
   const { items, isLoaded } = useSelector(({ pizzas }) => pizzas);
   const { category, sortBy } = useSelector(({ filters }) => filters);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchPizzas(category, sortBy));
@@ -31,6 +32,10 @@ const Home = React.memo(() => {
 
   const onSelectSortType = (type) => {
     dispatch(setSortBy(type));
+  };
+
+  const handleAddPizzaToCart = (obj) => {
+    dispatch(addPizzaToCart(obj));
   };
 
   return (
@@ -52,9 +57,9 @@ const Home = React.memo(() => {
         {isLoaded
           ? items.map((item) => (
               <PizzaBlock
-                onClickAddPizza={(obj) => console.log(obj)}
-                isLoading={true}
+                onClickAddPizza={handleAddPizzaToCart}
                 key={item.id}
+                addedCount={addedItems[item.id] && addedItems[item.id].length}
                 {...item}
               />
             ))

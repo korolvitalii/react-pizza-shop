@@ -1,5 +1,5 @@
 const initialState = {
-  items: {},
+  addedItems: {},
   totalPrice: 0,
   totalCount: 0,
 };
@@ -7,11 +7,19 @@ const initialState = {
 const cart = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_PIZZA_CART':
+      const newaddedItems = {
+        ...state.addedItems,
+        [action.payload.id]: !state.addedItems[action.payload.id]
+          ? [action.payload]
+          : [...state.addedItems[action.payload.id], action.payload],
+      };
+      const allPizzas = Object.values(newaddedItems).flat();
+      const calculateTotalPrice = allPizzas.reduce((acc, { price }) => acc + price, 0);
       return {
         ...state,
-        items: {
-          [action.payload.id]: [...state.items[action.payload.id], action.payload],
-        },
+        addedItems: newaddedItems,
+        totalCount: allPizzas.length,
+        totalPrice: Math.round(calculateTotalPrice * 100) / 100,
       };
     case 'SET_TOTAL_COUNT':
       return {
