@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { uniqueId } from 'lodash';
 
 import { CartItem } from '../components';
-import { clearCart, removeCartItem } from '../redux/actions/cart';
+import { clearCart, removeCartItem, plusItem, minusItem } from '../redux/actions/cart';
 import cartEmptyImage from '../assets/img/empty-cart.png';
 
 function Cart() {
@@ -18,11 +19,16 @@ function Cart() {
     }
   };
   const onRemoveItem = (id) => {
-    if (window.confirm('es?')) {
+    if (window.confirm('do you really want to remove pizzas?')) {
       dispatch(removeCartItem(id));
     }
   };
-
+  const onPlusItem = (id) => {
+    dispatch(plusItem(id));
+  };
+  const onMinusItem = (id) => {
+    dispatch(minusItem(id));
+  };
   return (
     <div className='content'>
       <div className='container container--cart'>
@@ -102,6 +108,7 @@ function Cart() {
             <div className='content__items'>
               {addedPizzas.map(({ id, name, type, size, price }) => (
                 <CartItem
+                  key={uniqueId()}
                   id={id}
                   name={name}
                   type={type}
@@ -110,6 +117,8 @@ function Cart() {
                   totalPrice={addedItems[id].totalPrice}
                   totalCount={addedItems[id].items.length}
                   onRemove={onRemoveItem}
+                  onPlus={onPlusItem}
+                  onMinus={onMinusItem}
                 />
               ))}
             </div>
@@ -123,7 +132,7 @@ function Cart() {
                 </span>
               </div>
               <div className='cart__bottom-buttons'>
-                <a href='/' className='button button--outline button--add go-back-btn'>
+                <Link to='/' className='button button--outline button--add go-back-btn'>
                   <svg
                     width='8'
                     height='14'
@@ -139,7 +148,7 @@ function Cart() {
                     />
                   </svg>
                   <span>come back</span>
-                </a>
+                </Link>
                 <div className='button pay-btn'>
                   <span>pay now</span>
                 </div>
@@ -149,7 +158,7 @@ function Cart() {
         ) : (
           <div className='cart cart--empty'>
             <h2>
-              Cart is empty <icon>😕</icon>
+              Cart is empty <i>😕</i>
             </h2>
             <p>
               Most likely you haven't ordered pizza yet.

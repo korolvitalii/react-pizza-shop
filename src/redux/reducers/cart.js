@@ -1,4 +1,4 @@
-import { isObject, get, omit } from 'lodash';
+import { get, omit } from 'lodash';
 
 const initialState = {
   addedItems: {},
@@ -8,53 +8,91 @@ const initialState = {
 
 const totalSum = (items, path) => {
   if (!Array.isArray(items)) {
-    const keys = Object.keys(items);
-    return keys.reduce((acc, key) => acc + get(items[key], path), 0);
+    const sum = Object.keys(items).reduce((acc, key) => acc + get(items[key], path), 0);
+    return Math.round(sum * 100) / 100;
   } else {
-    return items.reduce((acc, { price }) => acc + price, 0);
+    const sum = items.reduce((acc, item) => acc + item[path], 0);
+    return Math.round(sum * 100) / 100;
   }
 };
 
 const cart = (state = initialState, action) => {
   switch (action.type) {
-    case 'ADD_PIZZA_CART':
-      console.log(state.addedItems);
-
+    case 'ADD_PIZZA_CART': {
       const currentPizzaItems = !state.addedItems[action.payload.id]
         ? [action.payload]
         : [...state.addedItems[action.payload.id].items, action.payload];
-      const newAddedItems = {
+      const newItems = {
         ...state.addedItems,
         [action.payload.id]: {
           items: currentPizzaItems,
-          totalPrice: totalSum(currentPizzaItems),
+          totalPrice: totalSum(currentPizzaItems, 'price'),
         },
       };
       return {
         ...state,
-        addedItems: newAddedItems,
-        totalCount: 0,
-        totalPrice: totalSum(newAddedItems, 'totalPrice'),
+        addedItems: newItems,
+        totalCount: totalSum(newItems, 'items.length'),
+        totalPrice: totalSum(newItems, 'totalPrice'),
       };
-    case 'SET_TOTAL_COUNT':
+    }
+    case 'SET_TOTAL_COUNT': {
       return {
         ...state,
         totalCount: action.payload,
       };
-    case 'CLEAR_CART':
+    }
+    case 'CLEAR_CART': {
       return {
         addedItems: {},
         totalPrice: 0,
         totalCount: 0,
       };
-    case 'REMOVE_CART_ITEM':
+    }
+    case 'REMOVE_CART_ITEM': {
       const newItems = omit(state.addedItems, [`${action.payload}`]);
       return {
         ...state,
         addedItems: newItems,
-        totalPrice: 0,
-        totalCount: 0,
+        totalCount: totalSum(newItems, 'items.length'),
+        totalPrice: totalSum(newItems, 'totalPrice'),
       };
+    }
+    case 'PLUS_CART_ITEM': {
+      const currentItem = state.addedItems[action.payload].items[0];
+      const currentPizzaItems = [...state.addedItems[action.payload].items, currentItem];
+      const newItems = {
+        ...state.addedItems,
+        [action.payload]: {
+          items: currentPizzaItems,
+          totalPrice: totalSum(currentPizzaItems, 'price'),
+        },
+      };
+      return {
+        ...state,
+        addedItems: newItems,
+        totalCount: totalSum(newItems, 'items.length'),
+        totalPrice: totalSum(newItems, 'totalPrice'),
+      };
+    }
+    case 'MINUS_CART_ITEM': {
+      const currentPizzaItems = state.addedItems[action.payload].items.filter(
+        (item, index) => index !== 1,
+      );
+      const newItems = {
+        ...state.addedItems,
+        [action.payload]: {
+          items: currentPizzaItems,
+          totalPrice: totalSum(currentPizzaItems, 'price'),
+        },
+      };
+      return {
+        ...state,
+        addedItems: newItems,
+        totalCount: totalSum(newItems, 'items.length'),
+        totalPrice: totalSum(newItems, 'totalPrice'),
+      };
+    }
     default:
       return state;
   }
