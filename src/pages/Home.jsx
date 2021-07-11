@@ -59,7 +59,7 @@ const Home = React.memo(() => {
               <PizzaBlock
                 onClickAddPizza={handleAddPizzaToCart}
                 key={item.id}
-                addedCount={addedItems[item.id] && addedItems[item.id].length}
+                addedCount={addedItems[item.id] && addedItems[item.id].items.length}
                 {...item}
               />
             ))
