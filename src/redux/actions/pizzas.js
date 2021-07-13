@@ -1,19 +1,13 @@
-import axios from 'axios';
+import data from '../../assets/data/db';
 
 export const setLoaded = (payload) => ({
   type: 'SET_LOADED',
   payload,
 });
 
-export const fetchPizzas = (category, sortBy) => (dispatch) => {
+export const fetchPizzas = (category) => (dispatch) => {
   dispatch(setLoaded(false));
-  axios
-    .get(
-      `/pizzas?${category !== null ? `category=${category}` : ''}&_sort=${sortBy.type}&_order=${
-        sortBy.order
-      }`,
-    )
-    .then(({ data }) => dispatch(setPizzas(data)));
+  dispatch(setPizzas(data.pizzas));
 };
 
 export const setPizzas = (items) => ({

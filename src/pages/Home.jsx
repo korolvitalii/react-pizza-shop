@@ -5,9 +5,7 @@ import { Categories, SortPopup, PizzaBlock } from '../components';
 import { setCategory, setSortBy } from '../redux/actions/filters';
 import { addPizzaToCart } from '../redux/actions/cart';
 import { fetchPizzas } from '../redux/actions/pizzas';
-import LoadingBlock from '../components/PizzaBlock/LoadingBlock';
-import { uniqueId } from 'lodash';
-// import cart from '../redux/reducers/cart';
+
 
 const categoryNames = ['Meat', 'Vegetarian', 'Grill', 'Sharp', 'Closed'];
 const sortItems = [
@@ -19,12 +17,10 @@ const sortItems = [
 const Home = React.memo(() => {
   const dispatch = useDispatch();
   const { addedItems } = useSelector(({ cart }) => cart);
-  const { items, isLoaded } = useSelector(({ pizzas }) => pizzas);
-  const { category, sortBy } = useSelector(({ filters }) => filters);
-
+  const { items, filteredItems, isLoaded, category, sortBy } = useSelector(({ pizzas }) => pizzas);
   useEffect(() => {
-    dispatch(fetchPizzas(category, sortBy));
-  }, [dispatch, category, sortBy]);
+    dispatch(fetchPizzas(category));
+  }, [dispatch, sortBy, category]);
 
   const onSelectCategory = (index) => {
     dispatch(setCategory(index));
@@ -54,7 +50,7 @@ const Home = React.memo(() => {
       </div>
       <h2 className='content__title'>All pizzas</h2>
       <div className='content__items'>
-        {isLoaded
+        {isLoaded && filteredItems.length === 0
           ? items.map((item) => (
               <PizzaBlock
                 onClickAddPizza={handleAddPizzaToCart}
@@ -63,9 +59,14 @@ const Home = React.memo(() => {
                 {...item}
               />
             ))
-          : Array(12)
-              .fill(0)
-              .map((elem) => <LoadingBlock key={uniqueId()} />)}
+          : filteredItems.map((item) => (
+              <PizzaBlock
+                onClickAddPizza={handleAddPizzaToCart}
+                key={item.id}
+                addedCount={addedItems[item.id] && addedItems[item.id].items.length}
+                {...item}
+              />
+            ))}
       </div>
     </div>
   );
