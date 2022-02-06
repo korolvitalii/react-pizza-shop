@@ -71,3 +71,9 @@
     letter-spacing: 0.015em;
   }
 }
+
+@media (max-width: 800px) {
+  .pizza-block {
+    margin-left: 25px;
+  }
+}
