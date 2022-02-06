@@ -67,7 +67,6 @@ body {
     .cart__item {
       display: flex;
       flex-direction: column;
-      // border: 1px solid black;
       align-items: center;
       margin-bottom: 20px;
     }
@@ -307,7 +306,6 @@ body {
 
   &--empty {
     margin: 0 auto;
-    width: 560px;
     text-align: center;
 
     h2 {
